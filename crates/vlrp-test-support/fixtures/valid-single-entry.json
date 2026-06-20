@@ -1,0 +1,41 @@
+{
+  "payload": {
+    "protocol_version": "VLRP-1",
+    "raffle_id": "11111111-1111-1111-1111-111111111111",
+    "payout_split": { "winner": 9500, "organizer": 400, "platform": 100 },
+    "entries": [
+      {
+        "raffle_id": "11111111-1111-1111-1111-111111111111",
+        "entry_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "entry_index": 0,
+        "participant_public_id": "0101010101010101010101010101010101010101010101010101010101010101",
+        "payment_reference_hash": "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
+        "amount_sats": 2000,
+        "ticket_range": { "start": 0, "end": 2 },
+        "settled_at_unix_ms": 1700000000000,
+        "previous_entry_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "entry_hash": "31d417eaa14a6761ab1a2a682311556c57d58f060eae114371ad46bbe7c1f5a5"
+      }
+    ],
+    "freeze": {
+      "entry_count": 1,
+      "total_tickets": 2,
+      "total_pool_sats": 2000,
+      "entry_chain_head": "31d417eaa14a6761ab1a2a682311556c57d58f060eae114371ad46bbe7c1f5a5",
+      "entries_root": "5671ec6e7a78df80aa8119a185f3d25767772fa69cb4d5e7b78b4beadc90a1ef"
+    },
+    "bitcoin": {
+      "close_block_height": 900000,
+      "randomness_block_height": 900006,
+      "randomness_block_hash": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a"
+    },
+    "draw": {
+      "seed": "62ccf4a5c0f1eb51030434db480067270195651b5cff917399c4e145247e0496",
+      "winning_ticket": 0,
+      "winner_entry_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "winner_ticket_range": { "start": 0, "end": 2 }
+    },
+    "payouts": { "winner": 1900, "organizer": 80, "platform": 20 }
+  },
+  "proof_hash": "b24605bacb044f6e1fa5b257abf7e6c0c5b923e0f00aeaec33761517cdb5f7c3"
+}

@@ -1,0 +1,18 @@
+[package]
+name = "vlrp-jobs"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serde_json.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+time.workspace = true
+uuid.workspace = true
+vlrp-domain = { path = "../vlrp-domain" }
+
+[dev-dependencies]
+tokio.workspace = true
+vlrp-persistence-sqlx = { path = "../vlrp-persistence-sqlx" }
