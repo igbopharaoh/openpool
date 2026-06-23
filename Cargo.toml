@@ -2,15 +2,24 @@
 members = [
   "apps/api",
   "apps/worker",
-  "crates/vlrp-api",
-  "crates/vlrp-config",
-  "crates/vlrp-domain",
-  "crates/vlrp-observability",
-  "crates/vlrp-persistence-sqlx",
-  "crates/vlrp-protocol",
-  "crates/vlrp-test-support",
-  "crates/vlrp-verifier",
-  "crates/vlrp-jobs",
+  "apps/web",
+  "crates/openpool-application",
+  "crates/openpool-bitcoin",
+  "crates/openpool-api",
+  "crates/openpool-contract",
+  "crates/openpool-config",
+  "crates/openpool-domain",
+  "crates/openpool-observability",
+  "crates/openpool-oidc",
+  "crates/openpool-payments",
+  "crates/openpool-payments-mavapay",
+  "crates/openpool-proof-storage",
+  "crates/openpool-persistence-sqlx",
+  "crates/openpool-protocol",
+  "crates/openpool-test-support",
+  "crates/openpool-verifier",
+  "crates/openpool-verifier-wasm",
+  "crates/openpool-jobs",
 ]
 resolver = "3"
 
@@ -23,15 +32,24 @@ repository = "https://github.com/openpool/openpool"
 [workspace.dependencies]
 axum = "0.8"
 hex = "0.4"
+hmac = "0.12"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_jcs = "0.1"
 sha2 = "0.10"
+async-trait = "0.1"
+aes-gcm = "0.10"
+base64 = "0.22"
+dioxus = { version = "0.7", default-features = false, features = ["minimal", "router", "ssr"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio-rustls", "postgres", "uuid", "time", "json", "migrate", "macros"] }
 thiserror = "2"
-time = { version = "0.3", features = ["serde"] }
-tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal"] }
+time = { version = "0.3", features = ["serde", "parsing", "formatting", "macros"] }
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "signal", "time"] }
 tower = { version = "0.5", features = ["util"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
-uuid = { version = "1", features = ["serde", "v4"] }
+uuid = { version = "1", features = ["serde", "v4", "js"] }
+utoipa = { version = "5", features = ["axum_extras", "time", "uuid"] }
+wasm-bindgen = "0.2"
+openidconnect = { version = "4", default-features = false, features = ["reqwest"] }
