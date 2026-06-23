@@ -1,4 +1,5 @@
-# Web application
+# OpenPool web application
 
-The Next.js application is intentionally deferred to Milestone 3. This directory reserves
-the boundary so that the Rust workspace and browser code remain separate from day one.
+This is the Rust/Dioxus UI binary. Its SSR shell is mounted as the Axum fallback while `/v1`,
+health, webhook, and static-asset routes retain precedence. Node and TypeScript are not runtime
+dependencies of OpenPool.
