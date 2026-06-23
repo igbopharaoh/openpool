@@ -1,0 +1,15 @@
+[package]
+name = "openpool-proof-storage"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+hex.workspace = true
+hmac.workspace = true
+reqwest.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+time.workspace = true
