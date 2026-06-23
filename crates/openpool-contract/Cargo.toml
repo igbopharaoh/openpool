@@ -1,0 +1,12 @@
+[package]
+name = "openpool-contract"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+time.workspace = true
+uuid.workspace = true
+utoipa.workspace = true
