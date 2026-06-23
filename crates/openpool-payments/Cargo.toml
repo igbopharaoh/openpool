@@ -1,0 +1,18 @@
+[package]
+name = "openpool-payments"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+async-trait.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+time.workspace = true
+openpool-domain = { path = "../openpool-domain" }
+
+[dev-dependencies]
+tokio.workspace = true
+uuid.workspace = true
