@@ -1,5 +1,5 @@
 [package]
-name = "vlrp-api-app"
+name = "openpool-api-app"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +8,10 @@ license.workspace = true
 [dependencies]
 axum.workspace = true
 tokio.workspace = true
-vlrp-api = { path = "../../crates/vlrp-api" }
-vlrp-config = { path = "../../crates/vlrp-config" }
-vlrp-observability = { path = "../../crates/vlrp-observability" }
+openpool-api = { path = "../../crates/openpool-api" }
+openpool-config = { path = "../../crates/openpool-config" }
+openpool-observability = { path = "../../crates/openpool-observability" }
+openpool-oidc = { path = "../../crates/openpool-oidc" }
+openpool-payments = { path = "../../crates/openpool-payments" }
+openpool-payments-mavapay = { path = "../../crates/openpool-payments-mavapay" }
+openpool-persistence-sqlx = { path = "../../crates/openpool-persistence-sqlx" }
