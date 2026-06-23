@@ -1,6 +1,6 @@
 {
   "payload": {
-    "protocol_version": "VLRP-1",
+    "protocol_version": "OPENPOOL-1",
     "raffle_id": "11111111-1111-1111-1111-111111111111",
     "payout_split": { "winner": 9500, "organizer": 400, "platform": 100 },
     "entries": [
@@ -14,7 +14,7 @@
         "ticket_range": { "start": 0, "end": 2 },
         "settled_at_unix_ms": 1700000000000,
         "previous_entry_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-        "entry_hash": "31d417eaa14a6761ab1a2a682311556c57d58f060eae114371ad46bbe7c1f5a5"
+        "entry_hash": "cafc9d4f1f7d9d0613794c6275050dc53200985aa7d59dc4871fed87ef0435f7"
       },
       {
         "raffle_id": "11111111-1111-1111-1111-111111111111",
@@ -25,16 +25,16 @@
         "amount_sats": 3000,
         "ticket_range": { "start": 2, "end": 5 },
         "settled_at_unix_ms": 1700000000001,
-        "previous_entry_hash": "31d417eaa14a6761ab1a2a682311556c57d58f060eae114371ad46bbe7c1f5a5",
-        "entry_hash": "8f19ca0853df89b1c0d11879016e2ff3798b45648f4ec7651c252d54a8dd9ca4"
+        "previous_entry_hash": "cafc9d4f1f7d9d0613794c6275050dc53200985aa7d59dc4871fed87ef0435f7",
+        "entry_hash": "90786ae5340609ecc0968be484ed4b2c2e85565d5b6d7847d3c982e4f58c88a2"
       }
     ],
     "freeze": {
       "entry_count": 2,
       "total_tickets": 5,
       "total_pool_sats": 5000,
-      "entry_chain_head": "8f19ca0853df89b1c0d11879016e2ff3798b45648f4ec7651c252d54a8dd9ca4",
-      "entries_root": "13b5432acdd37be933819c322c90a0b8cd5f67da6ffa5e342d52614b52d53a34"
+      "entry_chain_head": "90786ae5340609ecc0968be484ed4b2c2e85565d5b6d7847d3c982e4f58c88a2",
+      "entries_root": "e9e98f65e094b755cea2f3fc2eb1b9d7ab1c79db8802fe93112f02da34be5b46"
     },
     "bitcoin": {
       "close_block_height": 900000,
@@ -42,12 +42,12 @@
       "randomness_block_hash": "2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a"
     },
     "draw": {
-      "seed": "e933d12506de2b59c10306964c49b5ceea442484004669ec91f2d4afb5d734a4",
-      "winning_ticket": 0,
+      "seed": "fca5db219d1ebfba8aa32cf01a4d64caa48ac094592dacea8a3ef36a651dcb77",
+      "winning_ticket": 1,
       "winner_entry_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
       "winner_ticket_range": { "start": 0, "end": 2 }
     },
     "payouts": { "winner": 4750, "organizer": 200, "platform": 50 }
   },
-  "proof_hash": "dc8b512acdc657bf56ec25d9bc3557ea5d43965a6f17198d5a16f652689a2ef2"
+  "proof_hash": "6e26c1a1ea25cc24550aa68fa5176ef4908eb2faaffd8c0059c9de5f71a0e48c"
 }

@@ -1,0 +1,48 @@
+name: Technical staging release
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_digest:
+        description: "OCI digest to deploy (sha256:...)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  packages: read
+
+jobs:
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anchore/sbom-action@v0
+        with: { image: "${{ vars.OPENPOOL_IMAGE_REPOSITORY }}@${{ inputs.image_digest }}", output-file: sbom.spdx.json }
+      - uses: aquasecurity/trivy-action@0.32.0
+        with: { image-ref: "${{ vars.OPENPOOL_IMAGE_REPOSITORY }}@${{ inputs.image_digest }}", format: table, exit-code: "1", severity: "HIGH,CRITICAL", ignore-unfixed: true }
+      - uses: sigstore/cosign-installer@v3
+      - run: cosign verify --certificate-identity-regexp='https://github.com/.+' --certificate-oidc-issuer=https://token.actions.githubusercontent.com "${{ vars.OPENPOOL_IMAGE_REPOSITORY }}@${{ inputs.image_digest }}"
+
+  migrate-and-deploy:
+    needs: supply-chain
+    environment: technical-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_STAGING_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - uses: opentofu/setup-opentofu@v1
+      - name: Apply reviewed infrastructure
+        working-directory: infra/opentofu/aws-staging
+        run: |
+          tofu init
+          tofu apply -auto-approve -var="image=${{ vars.OPENPOOL_IMAGE_REPOSITORY }}@${{ inputs.image_digest }}"
+      - name: Run migration task exactly once
+        run: |
+          aws ecs run-task --cluster "${{ vars.OPENPOOL_ECS_CLUSTER }}" --task-definition "${{ vars.OPENPOOL_MIGRATION_TASK }}" --launch-type FARGATE --network-configuration "${{ secrets.OPENPOOL_ECS_NETWORK_CONFIGURATION }}"
+      - name: Staging smoke test
+        run: curl --fail --retry 12 --retry-delay 5 "${{ vars.OPENPOOL_STAGING_URL }}/readyz"

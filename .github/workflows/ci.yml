@@ -31,5 +31,9 @@ jobs:
           components: rustfmt, clippy
       - run: cargo fmt --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo check -p openpool-web -p openpool-api-app
+      - run: rustup target add wasm32-unknown-unknown
+      - run: cargo build -p openpool-verifier-wasm --target wasm32-unknown-unknown
       - run: cargo test --workspace
       - run: cargo test --workspace -- --ignored
+      - run: "! rg -i 'v[l]rp' --glob '!target/**'"

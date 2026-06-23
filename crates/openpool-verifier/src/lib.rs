@@ -1,11 +1,12 @@
-//! Proof-only verification for public VLRP-1 proof documents.
+//! Proof-only verification for public OPENPOOL-1 proof documents.
 
-use vlrp_protocol::{
+use openpool_protocol::{
     BitcoinFacts, DrawInput, PROTOCOL_VERSION, ProofDocument, ProtocolError, draw, proof_hash,
     summarize_ledger,
 };
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum VerificationCode {
     ProtocolVersionMismatch,
     LedgerInvalid,
@@ -17,13 +18,13 @@ pub enum VerificationCode {
     ProofHashMismatch,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub struct VerificationIssue {
     pub code: VerificationCode,
     pub detail: String,
 }
 
-#[derive(Clone, Debug, Default, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub struct VerificationResult {
     pub issues: Vec<VerificationIssue>,
 }
@@ -156,7 +157,7 @@ pub fn verify_or_protocol_error(document: &ProofDocument) -> Result<(), Protocol
 
 #[cfg(test)]
 mod tests {
-    use vlrp_protocol::Hash32;
+    use openpool_protocol::Hash32;
 
     use super::*;
 
@@ -166,13 +167,13 @@ mod tests {
 
     fn single_entry_fixture() -> ProofDocument {
         fixture(include_str!(
-            "../../vlrp-test-support/fixtures/valid-single-entry.json"
+            "../../openpool-test-support/fixtures/valid-single-entry.json"
         ))
     }
 
     fn multiple_entry_fixture() -> ProofDocument {
         fixture(include_str!(
-            "../../vlrp-test-support/fixtures/valid-multiple-entry.json"
+            "../../openpool-test-support/fixtures/valid-multiple-entry.json"
         ))
     }
 
@@ -189,7 +190,7 @@ mod tests {
     #[test]
     fn rejects_corrupted_entry_root_draw_payout_and_hash() {
         let mut entry = multiple_entry_fixture();
-        entry.payload.entries[0].data.amount_sats = vlrp_domain::Sats::new(9_999);
+        entry.payload.entries[0].data.amount_sats = openpool_domain::Sats::new(9_999);
         let result = verify(&entry);
         assert!(has_code(&result, VerificationCode::LedgerInvalid));
 
@@ -204,7 +205,7 @@ mod tests {
         assert!(has_code(&result, VerificationCode::DrawInvalid));
 
         let mut payout = multiple_entry_fixture();
-        payout.payload.payouts.winner = vlrp_domain::Sats::new(1);
+        payout.payload.payouts.winner = openpool_domain::Sats::new(1);
         let result = verify(&payout);
         assert!(has_code(&result, VerificationCode::PayoutMismatch));
 
@@ -220,12 +221,12 @@ mod tests {
         assert!(has_code(&result, VerificationCode::LedgerInvalid));
 
         let mut split = multiple_entry_fixture();
-        split.payload.payout_split.platform = vlrp_domain::BasisPoints::new(99).unwrap();
+        split.payload.payout_split.platform = openpool_domain::BasisPoints::new(99).unwrap();
         let result = verify(&split);
         assert!(has_code(&result, VerificationCode::PayoutMismatch));
 
         let mut raffle = multiple_entry_fixture();
-        raffle.payload.raffle_id = vlrp_domain::RaffleId::from(
+        raffle.payload.raffle_id = openpool_domain::RaffleId::from(
             uuid::Uuid::parse_str("22222222-2222-2222-2222-222222222222").unwrap(),
         );
         let result = verify(&raffle);

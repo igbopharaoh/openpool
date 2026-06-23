@@ -1,5 +1,5 @@
 [package]
-name = "vlrp-worker-app"
+name = "openpool-worker-app"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -8,6 +8,18 @@ license.workspace = true
 [dependencies]
 axum.workspace = true
 tokio.workspace = true
-vlrp-api = { path = "../../crates/vlrp-api" }
-vlrp-config = { path = "../../crates/vlrp-config" }
-vlrp-observability = { path = "../../crates/vlrp-observability" }
+serde_json.workspace = true
+time.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+openpool-api = { path = "../../crates/openpool-api" }
+openpool-bitcoin = { path = "../../crates/openpool-bitcoin" }
+openpool-config = { path = "../../crates/openpool-config" }
+openpool-domain = { path = "../../crates/openpool-domain" }
+openpool-jobs = { path = "../../crates/openpool-jobs" }
+openpool-observability = { path = "../../crates/openpool-observability" }
+openpool-payments = { path = "../../crates/openpool-payments" }
+openpool-payments-mavapay = { path = "../../crates/openpool-payments-mavapay" }
+openpool-proof-storage = { path = "../../crates/openpool-proof-storage" }
+openpool-protocol = { path = "../../crates/openpool-protocol" }
+openpool-persistence-sqlx = { path = "../../crates/openpool-persistence-sqlx" }

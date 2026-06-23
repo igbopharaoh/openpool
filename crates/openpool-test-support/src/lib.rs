@@ -1,11 +1,11 @@
-//! Deterministic VLRP-1 fixtures shared by integration tests.
+//! Deterministic OPENPOOL-1 fixtures shared by integration tests.
 
-use uuid::Uuid;
-use vlrp_domain::{BasisPoints, EntryId, PayoutSplit, RaffleId, Sats, TicketRange};
-use vlrp_protocol::{
+use openpool_domain::{BasisPoints, EntryId, PayoutSplit, RaffleId, Sats, TicketRange};
+use openpool_protocol::{
     BitcoinFacts, DrawInput, EntryData, FreezeFacts, Hash32, LedgerEntry, PROTOCOL_VERSION,
     ProofDocument, ProofPayload, ZERO_HASH, draw,
 };
+use uuid::Uuid;
 
 fn uuid(value: &str) -> Uuid {
     Uuid::parse_str(value).expect("fixture UUID is valid")
@@ -40,7 +40,7 @@ pub fn valid_multiple_entry_proof() -> ProofDocument {
         first.entry_hash,
     );
     let entries = vec![first, second];
-    let summary = vlrp_protocol::summarize_ledger(&entries).unwrap();
+    let summary = openpool_protocol::summarize_ledger(&entries).unwrap();
     let split = PayoutSplit::new(
         BasisPoints::new(9_500).unwrap(),
         BasisPoints::new(400).unwrap(),
@@ -87,7 +87,7 @@ pub fn valid_single_entry_proof() -> ProofDocument {
     let mut document = valid_multiple_entry_proof();
     document.payload.entries.truncate(1);
     let entry = document.payload.entries[0].clone();
-    let summary = vlrp_protocol::summarize_ledger(&document.payload.entries).unwrap();
+    let summary = openpool_protocol::summarize_ledger(&document.payload.entries).unwrap();
     document.payload.freeze = FreezeFacts {
         entry_count: summary.entry_count,
         total_tickets: summary.total_tickets,

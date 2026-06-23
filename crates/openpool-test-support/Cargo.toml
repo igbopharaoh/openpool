@@ -1,5 +1,5 @@
 [package]
-name = "vlrp-test-support"
+name = "openpool-test-support"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -8,5 +8,5 @@ publish = false
 
 [dependencies]
 uuid.workspace = true
-vlrp-domain = { path = "../vlrp-domain" }
-vlrp-protocol = { path = "../vlrp-protocol" }
+openpool-domain = { path = "../openpool-domain" }
+openpool-protocol = { path = "../openpool-protocol" }
