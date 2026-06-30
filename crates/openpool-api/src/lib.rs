@@ -1,6 +1,9 @@
 //! HTTP contract for public raffle reads, organizer configuration, and invoice collection.
 use std::sync::Arc;
 
+pub mod oidc;
+pub mod web;
+
 use aes_gcm::{
     Aes256Gcm, Nonce,
     aead::{Aead, KeyInit, OsRng, rand_core::RngCore},
@@ -14,10 +17,10 @@ use axum::{
     routing::{get, patch, post},
 };
 use base64::{Engine, engine::general_purpose::STANDARD};
-use openpool_domain::{BasisPoints, InvoiceId, OrganizerId, PayoutSplit, RaffleId, Sats};
-use openpool_payments::{CollectionRequest, PaymentProvider};
-use openpool_payments_mavapay::Mavapay;
-use openpool_persistence_sqlx::{
+use openpool_core::domain::{BasisPoints, InvoiceId, OrganizerId, PayoutSplit, RaffleId, Sats};
+use openpool_core::payments::{CollectionRequest, PaymentProvider};
+use openpool_core::payments_mavapay::Mavapay;
+use openpool_core::persistence_sqlx::{
     NewCollectionInvoice, NewDraftRaffle, NewOidcLoginAttempt, NewOidcSession, NewOrganizer,
     Persistence,
 };
@@ -34,7 +37,7 @@ pub struct ApiState {
     pub address_cipher: AddressCipher,
     pub mavapay_webhook_secret: Option<Arc<[u8]>>,
     pub development_identity_enabled: bool,
-    pub oidc: Option<Arc<openpool_oidc::OidcAdapter>>,
+    pub oidc: Option<Arc<oidc::OidcAdapter>>,
     pub secure_session_cookie: bool,
 }
 
@@ -49,12 +52,12 @@ pub struct ApiState {
         get_invoice
     ),
     components(schemas(
-        openpool_contract::PublicRaffle,
-        openpool_contract::PublicInvoice,
-        openpool_contract::PublicPool,
-        openpool_contract::PublicEntry,
-        openpool_contract::EntryPage,
-        openpool_contract::Problem,
+        openpool_core::contract::PublicRaffle,
+        openpool_core::contract::PublicInvoice,
+        openpool_core::contract::PublicPool,
+        openpool_core::contract::PublicEntry,
+        openpool_core::contract::EntryPage,
+        openpool_core::contract::Problem,
         InvoiceRequest
     )),
     info(
@@ -269,7 +272,7 @@ async fn oidc_logout(State(s): State<ApiState>, headers: HeaderMap) -> Result<Re
 }
 
 async fn web_home() -> Html<String> {
-    Html(openpool_web::render_home())
+    Html(web::render_home())
 }
 
 async fn openapi() -> Json<utoipa::openapi::OpenApi> {
@@ -278,11 +281,11 @@ async fn openapi() -> Json<utoipa::openapi::OpenApi> {
 #[utoipa::path(
     get,
     path = "/v1/raffles",
-    responses((status = 200, body = [openpool_contract::PublicRaffle]))
+    responses((status = 200, body = [openpool_core::contract::PublicRaffle]))
 )]
 async fn list_raffles(
     State(s): State<ApiState>,
-) -> Result<Json<Vec<openpool_contract::PublicRaffle>>, ApiError> {
+) -> Result<Json<Vec<openpool_core::contract::PublicRaffle>>, ApiError> {
     Ok(Json(
         s.persistence
             .list_public_raffles()
@@ -296,12 +299,12 @@ async fn list_raffles(
     get,
     path = "/v1/raffles/{id}",
     params(("id" = Uuid, Path, description = "Raffle UUID")),
-    responses((status = 200, body = openpool_contract::PublicRaffle), (status = 404, body = openpool_contract::Problem))
+    responses((status = 200, body = openpool_core::contract::PublicRaffle), (status = 404, body = openpool_core::contract::Problem))
 )]
 async fn get_raffle(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicRaffle>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicRaffle>, ApiError> {
     Ok(Json(
         s.persistence
             .public_raffle(RaffleId::from(id))
@@ -309,11 +312,11 @@ async fn get_raffle(
             .into(),
     ))
 }
-#[utoipa::path(get, path = "/v1/raffles/{id}/pool", params(("id" = Uuid, Path)), responses((status = 200, body = openpool_contract::PublicPool)))]
+#[utoipa::path(get, path = "/v1/raffles/{id}/pool", params(("id" = Uuid, Path)), responses((status = 200, body = openpool_core::contract::PublicPool)))]
 async fn get_pool(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicPool>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicPool>, ApiError> {
     Ok(Json(s.persistence.public_pool(RaffleId::from(id)).await?))
 }
 #[derive(Deserialize)]
@@ -321,12 +324,12 @@ struct EntryQuery {
     cursor: Option<u64>,
     limit: Option<u32>,
 }
-#[utoipa::path(get, path = "/v1/raffles/{id}/entries", params(("id" = Uuid, Path)), responses((status = 200, body = openpool_contract::EntryPage)))]
+#[utoipa::path(get, path = "/v1/raffles/{id}/entries", params(("id" = Uuid, Path)), responses((status = 200, body = openpool_core::contract::EntryPage)))]
 async fn list_entries(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
     axum::extract::Query(query): axum::extract::Query<EntryQuery>,
-) -> Result<Json<openpool_contract::EntryPage>, ApiError> {
+) -> Result<Json<openpool_core::contract::EntryPage>, ApiError> {
     Ok(Json(
         s.persistence
             .public_entries(
@@ -360,7 +363,7 @@ async fn get_proof(
 async fn get_proof_metadata(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicProofMetadata>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicProofMetadata>, ApiError> {
     Ok(Json(
         s.persistence
             .public_proof_metadata(RaffleId::from(id))
@@ -370,13 +373,13 @@ async fn get_proof_metadata(
 async fn get_result(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicResult>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicResult>, ApiError> {
     Ok(Json(s.persistence.public_result(RaffleId::from(id)).await?))
 }
 async fn get_refund(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicRefund>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicRefund>, ApiError> {
     Ok(Json(s.persistence.public_refund(id).await?))
 }
 #[derive(Deserialize)]
@@ -455,7 +458,7 @@ async fn receive_mavapay_webhook(
         return Err(ApiError::bad("webhook event_id is required"));
     }
     s.persistence
-        .record_webhook_and_enqueue(openpool_persistence_sqlx::NewWebhookEvent {
+        .record_webhook_and_enqueue(openpool_core::persistence_sqlx::NewWebhookEvent {
             provider_name: "mavapay".into(),
             provider_event_id: normalized.event_id,
             invoice_id: InvoiceId::from(normalized.invoice_id),
@@ -471,13 +474,13 @@ async fn receive_mavapay_webhook(
     path = "/v1/raffles/{raffle_id}/invoices",
     params(("raffle_id" = Uuid, Path, description = "Open raffle UUID")),
     request_body = InvoiceRequest,
-    responses((status = 201, body = openpool_contract::PublicInvoice), (status = 400, body = openpool_contract::Problem), (status = 409, body = openpool_contract::Problem), (status = 502, body = openpool_contract::Problem))
+    responses((status = 201, body = openpool_core::contract::PublicInvoice), (status = 400, body = openpool_core::contract::Problem), (status = 409, body = openpool_core::contract::Problem), (status = 502, body = openpool_core::contract::Problem))
 )]
 async fn create_invoice(
     State(s): State<ApiState>,
     Path(raffle_id): Path<Uuid>,
     Json(body): Json<InvoiceRequest>,
-) -> Result<(StatusCode, Json<openpool_contract::PublicInvoice>), ApiError> {
+) -> Result<(StatusCode, Json<openpool_core::contract::PublicInvoice>), ApiError> {
     if body.lightning_address.trim().is_empty() {
         return Err(ApiError::bad("lightning_address is required"));
     }
@@ -545,12 +548,12 @@ async fn create_invoice(
     get,
     path = "/v1/invoices/{id}",
     params(("id" = Uuid, Path, description = "Invoice UUID")),
-    responses((status = 200, body = openpool_contract::PublicInvoice), (status = 404, body = openpool_contract::Problem))
+    responses((status = 200, body = openpool_core::contract::PublicInvoice), (status = 404, body = openpool_core::contract::Problem))
 )]
 async fn get_invoice(
     State(s): State<ApiState>,
     Path(id): Path<Uuid>,
-) -> Result<Json<openpool_contract::PublicInvoice>, ApiError> {
+) -> Result<Json<openpool_core::contract::PublicInvoice>, ApiError> {
     Ok(Json(
         s.persistence
             .public_invoice(InvoiceId::from(id))
@@ -566,7 +569,7 @@ fn hash(value: &[u8]) -> openpool_protocol::Hash32 {
 async fn list_organizer_raffles(
     headers: HeaderMap,
     State(s): State<ApiState>,
-) -> Result<Json<Vec<openpool_contract::PublicRaffle>>, ApiError> {
+) -> Result<Json<Vec<openpool_core::contract::PublicRaffle>>, ApiError> {
     let organizer_id = identity(&headers, &s).await?;
     if !s.persistence.organizer_exists(organizer_id).await? {
         return Err(ApiError::forbidden("active organizer required"));
@@ -584,7 +587,7 @@ async fn list_organizer_raffles(
 async fn list_operator_jobs(
     headers: HeaderMap,
     State(s): State<ApiState>,
-) -> Result<Json<Vec<openpool_contract::OperatorJob>>, ApiError> {
+) -> Result<Json<Vec<openpool_core::contract::OperatorJob>>, ApiError> {
     require_operator(&headers, &s).await?;
     Ok(Json(s.persistence.operator_jobs().await?))
 }
@@ -847,11 +850,11 @@ impl ApiError {
         }
     }
 }
-impl From<openpool_persistence_sqlx::PersistenceError> for ApiError {
-    fn from(value: openpool_persistence_sqlx::PersistenceError) -> Self {
+impl From<openpool_core::persistence_sqlx::PersistenceError> for ApiError {
+    fn from(value: openpool_core::persistence_sqlx::PersistenceError) -> Self {
         let (status, code) = if matches!(
             value,
-            openpool_persistence_sqlx::PersistenceError::NotFound(_)
+            openpool_core::persistence_sqlx::PersistenceError::NotFound(_)
         ) {
             (StatusCode::NOT_FOUND, "not_found")
         } else {
@@ -868,7 +871,7 @@ impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         (
             self.status,
-            Json(openpool_contract::Problem {
+            Json(openpool_core::contract::Problem {
                 status: self.status.as_u16(),
                 code: self.code.into(),
                 detail: self.message,

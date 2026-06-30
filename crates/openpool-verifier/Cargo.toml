@@ -7,9 +7,8 @@ license.workspace = true
 
 [dependencies]
 serde.workspace = true
-openpool-domain = { path = "../openpool-domain" }
+serde_json.workspace = true
 openpool-protocol = { path = "../openpool-protocol" }
 
 [dev-dependencies]
-serde_json.workspace = true
 uuid.workspace = true

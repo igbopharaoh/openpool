@@ -139,6 +139,14 @@ pub fn verify(document: &ProofDocument) -> VerificationResult {
     result
 }
 
+/// Validates a canonical proof JSON document and returns the verifier report as JSON.
+pub fn verify_proof_json(document: &str) -> Result<String, String> {
+    let proof: ProofDocument =
+        serde_json::from_str(document).map_err(|error| format!("invalid proof JSON: {error}"))?;
+    serde_json::to_string(&verify(&proof))
+        .map_err(|error| format!("could not encode verification report: {error}"))
+}
+
 pub fn verify_or_protocol_error(document: &ProofDocument) -> Result<(), ProtocolError> {
     let result = verify(document);
     if result.is_verified() {
@@ -166,15 +174,11 @@ mod tests {
     }
 
     fn single_entry_fixture() -> ProofDocument {
-        fixture(include_str!(
-            "../../openpool-test-support/fixtures/valid-single-entry.json"
-        ))
+        fixture(include_str!("../tests/fixtures/valid-single-entry.json"))
     }
 
     fn multiple_entry_fixture() -> ProofDocument {
-        fixture(include_str!(
-            "../../openpool-test-support/fixtures/valid-multiple-entry.json"
-        ))
+        fixture(include_str!("../tests/fixtures/valid-multiple-entry.json"))
     }
 
     fn has_code(result: &VerificationResult, expected: VerificationCode) -> bool {
@@ -190,7 +194,7 @@ mod tests {
     #[test]
     fn rejects_corrupted_entry_root_draw_payout_and_hash() {
         let mut entry = multiple_entry_fixture();
-        entry.payload.entries[0].data.amount_sats = openpool_domain::Sats::new(9_999);
+        entry.payload.entries[0].data.amount_sats = openpool_protocol::Sats::new(9_999);
         let result = verify(&entry);
         assert!(has_code(&result, VerificationCode::LedgerInvalid));
 
@@ -205,7 +209,7 @@ mod tests {
         assert!(has_code(&result, VerificationCode::DrawInvalid));
 
         let mut payout = multiple_entry_fixture();
-        payout.payload.payouts.winner = openpool_domain::Sats::new(1);
+        payout.payload.payouts.winner = openpool_protocol::Sats::new(1);
         let result = verify(&payout);
         assert!(has_code(&result, VerificationCode::PayoutMismatch));
 
@@ -221,12 +225,12 @@ mod tests {
         assert!(has_code(&result, VerificationCode::LedgerInvalid));
 
         let mut split = multiple_entry_fixture();
-        split.payload.payout_split.platform = openpool_domain::BasisPoints::new(99).unwrap();
+        split.payload.payout_split.platform = openpool_protocol::BasisPoints::new(99).unwrap();
         let result = verify(&split);
         assert!(has_code(&result, VerificationCode::PayoutMismatch));
 
         let mut raffle = multiple_entry_fixture();
-        raffle.payload.raffle_id = openpool_domain::RaffleId::from(
+        raffle.payload.raffle_id = openpool_protocol::RaffleId::from(
             uuid::Uuid::parse_str("22222222-2222-2222-2222-222222222222").unwrap(),
         );
         let result = verify(&raffle);

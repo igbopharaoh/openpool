@@ -1,7 +1,7 @@
 //! Dioxus SSR/hydration UI for the OpenPool public and authenticated surfaces.
 
 use dioxus::prelude::*;
-use openpool_contract::{OperatorJob, PublicInvoice, PublicPool, PublicRaffle, PublicResult};
+use openpool_core::contract::{OperatorJob, PublicInvoice, PublicPool, PublicRaffle, PublicResult};
 use serde::de::DeserializeOwned;
 
 #[derive(Clone, Debug, PartialEq, Routable)]
@@ -195,7 +195,7 @@ fn Verify() -> Element {
         h1 { "Verify an OpenPool proof" }
         p { "The browser runs the same Rust OPENPOOL-1 verifier compiled to WebAssembly; no private API call is used for validation." }
         textarea { value: "{source}", placeholder: "Paste proof.json", oninput: move |event| source.set(event.value()) }
-        button { class: "button", onclick: move |_| { verification.set(Some(match openpool_verifier_wasm::verify_proof_json(&source()) { Ok(report) => report, Err(error) => format!("Invalid proof: {error:?}"), })); }, "Verify locally" }
+        button { class: "button", onclick: move |_| { verification.set(Some(match openpool_verifier::verify_proof_json(&source()) { Ok(report) => report, Err(error) => format!("Invalid proof: {error:?}"), })); }, "Verify locally" }
         if let Some(report) = verification() { pre { "{report}" } }
     } }
 }

@@ -8,8 +8,8 @@ use axum::{
 };
 use hmac::{Hmac, Mac};
 use openpool_api::{ApiState, router};
-use openpool_payments::FakePaymentProvider;
-use openpool_persistence_sqlx::Persistence;
+use openpool_core::payments::FakePaymentProvider;
+use openpool_core::persistence_sqlx::Persistence;
 use serde_json::{Value, json};
 use sha2::Sha256;
 use tower::ServiceExt;

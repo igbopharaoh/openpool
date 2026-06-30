@@ -9,22 +9,21 @@ license.workspace = true
 aes-gcm.workspace = true
 axum.workspace = true
 base64.workspace = true
+dioxus.workspace = true
+openidconnect.workspace = true
+reqwest.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 thiserror.workspace = true
 time.workspace = true
+tokio.workspace = true
 uuid.workspace = true
 utoipa.workspace = true
-openpool-domain = { path = "../openpool-domain" }
-openpool-oidc = { path = "../openpool-oidc" }
-openpool-contract = { path = "../openpool-contract" }
-openpool-payments = { path = "../openpool-payments" }
-openpool-payments-mavapay = { path = "../openpool-payments-mavapay" }
-openpool-persistence-sqlx = { path = "../openpool-persistence-sqlx" }
+openpool-core = { path = "../openpool-core" }
 openpool-protocol = { path = "../openpool-protocol" }
 openpool-verifier = { path = "../openpool-verifier" }
-openpool-web = { path = "../openpool-web" }
+url = "2"
 
 [dev-dependencies]
 hex.workspace = true

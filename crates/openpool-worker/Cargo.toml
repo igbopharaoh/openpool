@@ -1,0 +1,17 @@
+[package]
+name = "openpool-worker"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+axum.workspace = true
+tokio.workspace = true
+serde_json.workspace = true
+time.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+openpool-api = { path = "../openpool-api" }
+openpool-core = { path = "../openpool-core" }
+openpool-protocol = { path = "../openpool-protocol" }
