@@ -1827,17 +1827,14 @@ dependencies = [
  "aes-gcm",
  "axum",
  "base64 0.22.1",
+ "dioxus",
  "hex",
  "hmac",
- "openpool-contract",
- "openpool-domain",
- "openpool-oidc",
- "openpool-payments",
- "openpool-payments-mavapay",
- "openpool-persistence-sqlx",
+ "openidconnect",
+ "openpool-core",
  "openpool-protocol",
  "openpool-verifier",
- "openpool-web",
+ "reqwest",
  "serde",
  "serde_json",
  "sha2",
@@ -1846,175 +1843,32 @@ dependencies = [
  "time",
  "tokio",
  "tower",
- "utoipa",
- "uuid",
-]
-
-[[package]]
-name = "openpool-api-app"
-version = "0.1.0"
-dependencies = [
- "axum",
- "openpool-api",
- "openpool-config",
- "openpool-observability",
- "openpool-oidc",
- "openpool-payments",
- "openpool-payments-mavapay",
- "openpool-persistence-sqlx",
- "tokio",
-]
-
-[[package]]
-name = "openpool-application"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "openpool-contract",
- "openpool-domain",
- "openpool-payments",
- "thiserror 2.0.18",
- "time",
- "uuid",
-]
-
-[[package]]
-name = "openpool-bitcoin"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "hex",
- "openpool-protocol",
- "reqwest",
- "serde",
- "thiserror 2.0.18",
- "time",
- "tokio",
-]
-
-[[package]]
-name = "openpool-config"
-version = "0.1.0"
-dependencies = [
- "thiserror 2.0.18",
-]
-
-[[package]]
-name = "openpool-contract"
-version = "0.1.0"
-dependencies = [
- "serde",
- "time",
- "utoipa",
- "uuid",
-]
-
-[[package]]
-name = "openpool-domain"
-version = "0.1.0"
-dependencies = [
- "serde",
- "thiserror 2.0.18",
- "uuid",
-]
-
-[[package]]
-name = "openpool-jobs"
-version = "0.1.0"
-dependencies = [
- "openpool-domain",
- "openpool-persistence-sqlx",
- "serde_json",
- "sqlx",
- "thiserror 2.0.18",
- "time",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "openpool-observability"
-version = "0.1.0"
-dependencies = [
- "tracing-subscriber",
-]
-
-[[package]]
-name = "openpool-oidc"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "openidconnect",
- "reqwest",
- "serde",
- "serde_json",
- "thiserror 2.0.18",
  "url",
+ "utoipa",
  "uuid",
 ]
 
 [[package]]
-name = "openpool-payments"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "openpool-domain",
- "reqwest",
- "serde",
- "thiserror 2.0.18",
- "time",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "openpool-payments-mavapay"
+name = "openpool-core"
 version = "0.1.0"
 dependencies = [
  "async-trait",
  "axum",
  "hex",
  "hmac",
- "openpool-domain",
- "openpool-payments",
- "reqwest",
- "serde",
- "serde_json",
- "sha2",
- "time",
- "tokio",
- "uuid",
-]
-
-[[package]]
-name = "openpool-persistence-sqlx"
-version = "0.1.0"
-dependencies = [
- "hex",
- "openpool-contract",
- "openpool-domain",
  "openpool-protocol",
  "openpool-verifier",
+ "reqwest",
  "serde",
  "serde_json",
+ "sha2",
  "sqlx",
  "thiserror 2.0.18",
  "time",
  "tokio",
+ "tracing-subscriber",
+ "utoipa",
  "uuid",
-]
-
-[[package]]
-name = "openpool-proof-storage"
-version = "0.1.0"
-dependencies = [
- "async-trait",
- "hex",
- "hmac",
- "reqwest",
- "sha2",
- "thiserror 2.0.18",
- "time",
 ]
 
 [[package]]
@@ -2022,7 +1876,6 @@ name = "openpool-protocol"
 version = "0.1.0"
 dependencies = [
  "hex",
- "openpool-domain",
  "serde",
  "serde_jcs",
  "sha2",
@@ -2031,19 +1884,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "openpool-test-support"
-version = "0.1.0"
-dependencies = [
- "openpool-domain",
- "openpool-protocol",
- "uuid",
-]
-
-[[package]]
 name = "openpool-verifier"
 version = "0.1.0"
 dependencies = [
- "openpool-domain",
  "openpool-protocol",
  "serde",
  "serde_json",
@@ -2051,52 +1894,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "openpool-verifier-wasm"
-version = "0.1.0"
-dependencies = [
- "openpool-protocol",
- "openpool-verifier",
- "serde_json",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "openpool-web"
-version = "0.1.0"
-dependencies = [
- "dioxus",
- "openpool-contract",
- "openpool-verifier-wasm",
- "reqwest",
- "serde",
- "serde_json",
- "uuid",
- "web-sys",
-]
-
-[[package]]
-name = "openpool-web-app"
-version = "0.1.0"
-dependencies = [
- "dioxus",
- "openpool-web",
-]
-
-[[package]]
-name = "openpool-worker-app"
+name = "openpool-worker"
 version = "0.1.0"
 dependencies = [
  "axum",
  "openpool-api",
- "openpool-bitcoin",
- "openpool-config",
- "openpool-domain",
- "openpool-jobs",
- "openpool-observability",
- "openpool-payments",
- "openpool-payments-mavapay",
- "openpool-persistence-sqlx",
- "openpool-proof-storage",
+ "openpool-core",
  "openpool-protocol",
  "serde_json",
  "time",

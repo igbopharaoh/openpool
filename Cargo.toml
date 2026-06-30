@@ -1,25 +1,10 @@
 [workspace]
 members = [
-  "apps/api",
-  "apps/worker",
-  "apps/web",
-  "crates/openpool-application",
-  "crates/openpool-bitcoin",
   "crates/openpool-api",
-  "crates/openpool-contract",
-  "crates/openpool-config",
-  "crates/openpool-domain",
-  "crates/openpool-observability",
-  "crates/openpool-oidc",
-  "crates/openpool-payments",
-  "crates/openpool-payments-mavapay",
-  "crates/openpool-proof-storage",
-  "crates/openpool-persistence-sqlx",
+  "crates/openpool-core",
   "crates/openpool-protocol",
-  "crates/openpool-test-support",
   "crates/openpool-verifier",
-  "crates/openpool-verifier-wasm",
-  "crates/openpool-jobs",
+  "crates/openpool-worker",
 ]
 resolver = "3"
 

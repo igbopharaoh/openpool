@@ -26,14 +26,15 @@ jobs:
       DATABASE_URL: postgres://openpool:openpool@localhost:5432/openpool
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.94.1
+      - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
       - run: cargo fmt --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
-      - run: cargo check -p openpool-web -p openpool-api-app
+      - run: cargo check -p openpool-api -p openpool-worker
       - run: rustup target add wasm32-unknown-unknown
-      - run: cargo build -p openpool-verifier-wasm --target wasm32-unknown-unknown
+      - run: cargo check -p openpool-protocol --target wasm32-unknown-unknown
+      - run: cargo check -p openpool-verifier --target wasm32-unknown-unknown
       - run: cargo test --workspace
       - run: cargo test --workspace -- --ignored
       - run: "! rg -i 'v[l]rp' --glob '!target/**'"
