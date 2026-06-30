@@ -12,4 +12,3 @@ serde_jcs.workspace = true
 sha2.workspace = true
 thiserror.workspace = true
 uuid.workspace = true
-openpool-domain = { path = "../openpool-domain" }

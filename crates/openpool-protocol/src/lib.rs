@@ -2,10 +2,13 @@
 
 use std::fmt;
 
-use openpool_domain::{EntryId, PayoutAmounts, PayoutSplit, RaffleId, Sats, TicketRange};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
+
+mod domain;
+
+pub use domain::*;
 
 pub const PROTOCOL_VERSION: &str = "OPENPOOL-1";
 pub const ZERO_HASH: Hash32 = Hash32([0; 32]);
@@ -343,7 +346,6 @@ pub enum ProtocolError {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use openpool_domain::{BasisPoints, PayoutSplit};
     use uuid::Uuid;
 
     fn id(value: &str) -> Uuid {
